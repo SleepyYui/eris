@@ -43,7 +43,7 @@ declare namespace Eris {
 
   // Channel
   type AnyChannel = AnyGuildChannel | PrivateChannel;
-  type AnyGuildChannel = GuildTextableChannel | AnyVoiceChannel | CategoryChannel;
+  type AnyGuildChannel = GuildTextableChannel | AnyVoiceChannel | CategoryChannel | ForumChannel;
   type AnyThreadChannel = NewsThreadChannel | PrivateThreadChannel | PublicThreadChannel | ThreadChannel;
   type AnyVoiceChannel = TextVoiceChannel | StageChannel;
   type ChannelTypeConversion<T extends GuildChannelTypes> =
@@ -158,6 +158,10 @@ declare namespace Eris {
 
   // Thread
   type AutoArchiveDuration = 60 | 1440 | 4320 | 10080;
+
+  // Forum
+  type ForumLayout = 0 | 1 | 2;
+  type ForumSortOrder = 0 | 1;
 
   // User
   type PremiumTypes = Constants["PremiumTypes"][keyof Constants["PremiumTypes"]];
@@ -1530,6 +1534,15 @@ declare namespace Eris {
     archiveTimestamp: number;
     autoArchiveDuration: AutoArchiveDuration;
     locked: boolean;
+  }
+
+  // Forum
+  interface ForumTag {
+    id: string;
+    name: string;
+    emojiId: string | null;
+    emojiName: string | null;
+    moderated: boolean;
   }
 
   // Modals
@@ -3777,6 +3790,20 @@ declare namespace Eris {
     constructor(data: BaseData, client: Client);
     leave(): Promise<void>;
     update(data: BaseData): void;
+  }
+
+  export class ForumChannel extends GuildChannel {
+    defaultAutoArchiveDuration?: AutoArchiveDuration; // not showing up sometimes (when not set)
+    defaultForumLayout?: ForumLayout; // not showing up sometimes (when not set)
+    defaultReactionEmoji?: PartialEmoji; // not showing up sometimes (when not set)
+    defaultSortOrder?: ForumSortOrder; // not showing up sometimes (when not set)
+    availableTags: ForumTag[];
+    rateLimitPerUser: number;
+    topic?: string | null;
+    constructor(data: BaseData, client: Client);
+    //edit(options: Omit<EditChannelOptions, "icon" | "ownerID">, reason?: string): Promise<this>;
+    //createForumThread(options: CreateForumThreadOptions): Promise<ForumThreadChannel>;
+    //getForumThreads(options?: GetForumThreadsOptions): Promise<ForumThreadChannel[]>;
   }
 
   export class UnavailableGuild extends Base {
